@@ -4,18 +4,18 @@ import time
 
 import typer
 
-from odoo_docker_launcher import config, env, db
-from odoo_docker_launcher.config import scaffold
-from odoo_docker_launcher.constants import get_constants
-from odoo_docker_launcher.db import create_database
-from odoo_docker_launcher.env import validate
-from odoo_docker_launcher.services.containers import stop_running_containers, build_docker_images, launch_database_only, \
+from docker import config, env, db
+from docker.config import scaffold
+from docker.constants import get_constants
+from docker.db import create_database
+from docker.env import validate
+from docker.services.containers import stop_running_containers, build_docker_images, launch_database_only, \
     get_database_names, launch_containers
-from odoo_docker_launcher.services.custom_logger import CustomLogger
-from odoo_docker_launcher.services.database_creator import check_service_health
-from odoo_docker_launcher.services.file_operations import copy_requirements, list_updated_addons, update_addons_cache
-from odoo_docker_launcher.services.module_manager import list_addons_in_folder, list_to_install_addons
-from odoo_docker_launcher.services.traefik import update_proxy_mode
+from docker.services.custom_logger import CustomLogger
+from docker.services.database_creator import check_service_health
+from docker.services.file_operations import copy_requirements, list_updated_addons, update_addons_cache
+from docker.services.module_manager import list_addons_in_folder, list_to_install_addons
+from docker.services.traefik import update_proxy_mode
 
 app = typer.Typer(
     add_completion=True,

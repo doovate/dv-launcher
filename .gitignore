@@ -2,3 +2,4 @@
 /odoo_docker_launcher/addons/
 /pymtech_docker/
 /.venv/
+/.idea/

@@ -3,8 +3,8 @@ from dataclasses import fields
 
 import typer
 
-from odoo_docker_launcher.constants import get_constants
-from odoo_docker_launcher.services.custom_logger import CustomLogger
+from docker.constants import get_constants
+from docker.services.custom_logger import CustomLogger
 
 logger = CustomLogger()
 cwd = os.getcwd()

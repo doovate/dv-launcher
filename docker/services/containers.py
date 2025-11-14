@@ -1,8 +1,8 @@
 import subprocess
 from typing import Any
 
-from odoo_docker_launcher.constants import Constants
-from odoo_docker_launcher.services.custom_logger import CustomLogger
+from docker.constants import Constants
+from docker.services.custom_logger import CustomLogger
 
 logger = CustomLogger()
 

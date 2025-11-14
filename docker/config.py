@@ -4,7 +4,7 @@ import os
 import psutil
 import typer
 
-from odoo_docker_launcher.services.custom_logger import CustomLogger
+from docker.services.custom_logger import CustomLogger
 
 app = typer.Typer(
     no_args_is_help=True,
