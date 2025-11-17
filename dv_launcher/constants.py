@@ -13,7 +13,6 @@ class Constants:
     POSTGRES_VERSION: Optional[str]
     ODOO_EXPOSED_PORT: Optional[str]
     ODOO_INTERNAL_PORT: Optional[str]
-    ODOO_LOG: Optional[str]
     ODOO_CONFIG: Optional[str]
     ODOO_ADDONS: Optional[str]
     DOMAIN: Optional[str]
@@ -41,7 +40,6 @@ class Constants:
             POSTGRES_VERSION=os.getenv('POSTGRES_VERSION'),
             ODOO_EXPOSED_PORT=os.getenv('ODOO_EXPOSED_PORT'),
             ODOO_INTERNAL_PORT=os.getenv('ODOO_INTERNAL_PORT'),
-            ODOO_LOG=os.getenv('ODOO_LOG'),
             ODOO_CONFIG=os.getenv('ODOO_CONFIG'),
             ODOO_ADDONS=os.getenv('ODOO_ADDONS'),
             DOMAIN=os.getenv('DOMAIN'),

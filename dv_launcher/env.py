@@ -3,8 +3,8 @@ from dataclasses import fields
 
 import typer
 
-from docker.constants import get_constants
-from docker.services.custom_logger import CustomLogger
+from dv_launcher.constants import get_constants
+from dv_launcher.services.custom_logger import CustomLogger
 
 logger = CustomLogger()
 cwd = os.getcwd()
@@ -33,7 +33,6 @@ def validate():
     logger.print_status(f"Odoo internal port: {constants.ODOO_INTERNAL_PORT}")
     logger.print_status(f"Domain: {constants.DOMAIN}")
     logger.print_status("--- Files & Paths ---")
-    logger.print_status(f"Odoo log path: {constants.ODOO_LOG}")
     logger.print_status(f"Odoo config path: {constants.ODOO_CONFIG}")
     logger.print_status(f"Odoo addons path: {constants.ADDONS_FOLDER}")
     logger.print_status("--- Module Management ---")

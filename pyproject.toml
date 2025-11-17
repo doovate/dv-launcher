@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dv-launcher"
-version = "1.1.0"
+version = "1.1.3"
 description = "Odoo deploy command line tool"
 requires-python = ">=3.10.12"
 dependencies = [
@@ -15,10 +15,8 @@ dependencies = [
     "typer>=0.20.0",
 ]
 
-# 👇 actualiza el entry point para apuntar al nuevo paquete
 [project.scripts]
-pymtech-docker-launcher = "docker.deploy:deploy"
+dv-launcher = "dv_launcher.deploy:deploy"
 
-# 👇 dile a hatchling dónde están los paquetes
 [tool.hatch.build.targets.wheel]
-packages = ["docker"]
+packages = ["dv_launcher"]

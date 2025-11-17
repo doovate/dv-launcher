@@ -4,18 +4,18 @@ import time
 
 import typer
 
-from docker import config, env, db
-from docker.config import scaffold
-from docker.constants import get_constants
-from docker.db import create_database
-from docker.env import validate
-from docker.services.containers import stop_running_containers, build_docker_images, launch_database_only, \
+from dv_launcher import config, env, db, version
+from dv_launcher.config import scaffold
+from dv_launcher.constants import get_constants
+from dv_launcher.db import create_database
+from dv_launcher.env import validate
+from dv_launcher.services.containers import stop_running_containers, build_docker_images, launch_database_only, \
     get_database_names, launch_containers
-from docker.services.custom_logger import CustomLogger
-from docker.services.database_creator import check_service_health
-from docker.services.file_operations import copy_requirements, list_updated_addons, update_addons_cache
-from docker.services.module_manager import list_addons_in_folder, list_to_install_addons
-from docker.services.traefik import update_proxy_mode
+from dv_launcher.services.custom_logger import CustomLogger
+from dv_launcher.services.database_creator import check_service_health
+from dv_launcher.services.file_operations import copy_requirements, list_updated_addons, update_addons_cache
+from dv_launcher.services.module_manager import list_addons_in_folder, list_to_install_addons
+from dv_launcher.services.traefik import update_proxy_mode
 
 app = typer.Typer(
     add_completion=True,
@@ -163,6 +163,7 @@ def main(ctx: typer.Context):
 app.add_typer(config.app, name="config")
 app.add_typer(env.app, name="env")
 app.add_typer(db.app, name="db")
+app.add_typer(version.app)
 
 
 def deploy():

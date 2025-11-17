@@ -1,8 +1,8 @@
 import subprocess
 from typing import Any
 
-from docker.constants import Constants
-from docker.services.custom_logger import CustomLogger
+from dv_launcher.constants import Constants
+from dv_launcher.services.custom_logger import CustomLogger
 
 logger = CustomLogger()
 

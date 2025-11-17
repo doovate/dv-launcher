@@ -3,3 +3,9 @@
 /pymtech_docker/
 /.venv/
 /.idea/
+/dv_launcher/addons/
+/dv_launcher/cache/
+/dv_launcher/config/
+/addons/
+/cache/
+/config/
