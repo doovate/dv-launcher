@@ -64,7 +64,7 @@ async def async_main():
             # Launch containers without updating nor installing modules
             launch_containers(constants)
             # After launching containers, create a new database if necessary
-            if constants.DEPLOYMENT_TARGET == 'dev' and constants.AUTO_CREATE_DATABASE:
+            if constants.AUTO_CREATE_DATABASE:
                 # Wait for the database to be ready
                 await check_service_health(constants)
                 # Create the new database
