@@ -1,9 +1,11 @@
 import asyncio
+import os
 import subprocess
 
 import typer
 from playwright.async_api import async_playwright
 
+from dv_launcher.constants import get_constants
 from dv_launcher.services.custom_logger import CustomLogger
 
 app = typer.Typer(
@@ -11,6 +13,9 @@ app = typer.Typer(
     add_completion=True,
     help="Configuration files operations"
 )
+
+cwd = os.getcwd()
+constants = get_constants(cwd)
 
 logger = CustomLogger()
 
@@ -29,10 +34,10 @@ async def create_database(port: str) -> None:
                 browser = await p.chromium.launch(headless=True)
                 page = await browser.new_page()
                 await page.goto(f"http://localhost:{port}/web/database/manager")
-                await page.fill("input[name=\"master_pwd\"]", "master")
-                await page.fill("input[name=\"name\"]", "master")
-                await page.fill("input[name=\"login\"]", "master")
-                await page.fill("input[name=\"password\"]", "master")
+                await page.fill("input[name=\"master_pwd\"]", constants.INITIAL_DB_MASTER_PASS)
+                await page.fill("input[name=\"name\"]", constants.INITIAL_DB_NAME)
+                await page.fill("input[name=\"login\"]", constants.INITIAL_DB_USER)
+                await page.fill("input[name=\"password\"]", constants.INITIAL_DB_USER_PASS)
                 await page.select_option('#lang', 'es_ES')
                 await page.select_option('#country', 'es')
                 await page.click("text=Create database")

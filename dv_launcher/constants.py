@@ -22,6 +22,10 @@ class Constants:
     UPDATE_MODULE_LIST: Optional[str]
     FORCE_UPDATE: bool
     AUTO_CREATE_DATABASE: bool
+    INITIAL_DB_MASTER_PASS: Optional[str]
+    INITIAL_DB_NAME: Optional[str]
+    INITIAL_DB_USER: Optional[str]
+    INITIAL_DB_USER_PASS: Optional[str]
     BASE_DIR: str
     ADDONS_FOLDER: str
     ENV_FILE: str
@@ -54,6 +58,10 @@ class Constants:
                         os.getenv('FORCE_UPDATE') == 'True' or os.getenv('FORCE_UPDATE') == 'true') else False,
             AUTO_CREATE_DATABASE=True if (os.getenv('AUTO_CREATE_DATABASE') == 'True' or os.getenv(
                 'AUTO_CREATE_DATABASE') == 'true') else False,
+            INITIAL_DB_MASTER_PASS=os.getenv('INITIAL_DB_MASTER_PASS'),
+            INITIAL_DB_NAME=os.getenv('INITIAL_DB_NAME'),
+            INITIAL_DB_USER=os.getenv('INITIAL_DB_USER'),
+            INITIAL_DB_USER_PASS=os.getenv('INITIAL_DB_USER_PASS'),
             BASE_DIR=cwd,
             ADDONS_FOLDER=os.getenv('ODOO_ADDONS') if os.getenv('ODOO_ADDONS') != './addons' else os.path.join(
                 cwd, 'addons'),
