@@ -4,7 +4,7 @@ import os
 import psutil
 import typer
 
-from dv_launcher.services.custom_logger import CustomLogger
+from dv_launcher.services.logging.custom_logger import CustomLogger
 
 app = typer.Typer(
     no_args_is_help=True,

@@ -4,8 +4,8 @@ import os
 import shutil
 from typing import List, Tuple, Dict
 
-from .custom_logger import CustomLogger
-from ..constants import Constants
+from dv_launcher.data.constants import Constants
+from dv_launcher.services.logging.custom_logger import CustomLogger
 
 logger = CustomLogger()
 

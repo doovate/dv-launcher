@@ -1,7 +1,7 @@
 import configparser
 import os.path
 
-from .custom_logger import CustomLogger
+from dv_launcher.services.logging.custom_logger import CustomLogger
 
 logger = CustomLogger()
 

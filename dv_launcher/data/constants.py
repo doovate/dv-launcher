@@ -4,6 +4,10 @@ from typing import Optional
 
 from dotenv import load_dotenv
 
+from dv_launcher.services.logging.custom_logger import CustomLogger
+
+logger = CustomLogger()
+
 
 @dataclass
 class Constants:
@@ -48,14 +52,14 @@ class Constants:
             ODOO_ADDONS=os.getenv('ODOO_ADDONS'),
             DOMAIN=os.getenv('DOMAIN'),
             OPTIONAL_WHISPER=True if (
-                        os.getenv('OPTIONAL_WHISPER') == 'True' or os.getenv('OPTIONAL_WHISPER') == 'true') else False,
+                    os.getenv('OPTIONAL_WHISPER') == 'True' or os.getenv('OPTIONAL_WHISPER') == 'true') else False,
             AUTO_INSTALL_MODULES=True if (os.getenv('AUTO_INSTALL_MODULES') == 'True' or os.getenv(
                 'AUTO_INSTALL_MODULES') == 'true') else False,
             AUTO_UPDATE_MODULES=True if (os.getenv('AUTO_UPDATE_MODULES') == 'True' or os.getenv(
                 'AUTO_UPDATE_MODULES') == 'true') else False,
             UPDATE_MODULE_LIST=os.getenv('UPDATE_MODULE_LIST'),
             FORCE_UPDATE=True if (
-                        os.getenv('FORCE_UPDATE') == 'True' or os.getenv('FORCE_UPDATE') == 'true') else False,
+                    os.getenv('FORCE_UPDATE') == 'True' or os.getenv('FORCE_UPDATE') == 'true') else False,
             AUTO_CREATE_DATABASE=True if (os.getenv('AUTO_CREATE_DATABASE') == 'True' or os.getenv(
                 'AUTO_CREATE_DATABASE') == 'true') else False,
             INITIAL_DB_MASTER_PASS=os.getenv('INITIAL_DB_MASTER_PASS'),
@@ -71,6 +75,17 @@ class Constants:
             CACHE_CONFIG_FILE=os.path.join(cwd, "cache", "config_cache.json"),
             CACHE_ADDONS_FILE=os.path.join(cwd, "cache", "addons_cache.json")
         )
+
+    def __post_init__(self):
+        if self.ODOO_VERSION not in ['16', '17', '18', '19']:
+            logger.error(f"Invalid ODOO_VERSION: {self.ODOO_VERSION}. Supported versions are 16, 17, 18, 19")
+            exit(1)
+        if self.DEPLOYMENT_TARGET not in ['dev', 'prod']:
+            logger.error(f"Invalid DEPLOYMENT_TARGET: {self.DEPLOYMENT_TARGET}. Supported values are 'dev' and 'prod'")
+            exit(1)
+        if not os.path.exists(self.ADDONS_FOLDER):
+            logger.error(f"Invalid ODOO_ADDONS: {self.ODOO_ADDONS}. Folder does not exist")
+            exit(1)
 
 
 _instance: Optional[Constants] = None

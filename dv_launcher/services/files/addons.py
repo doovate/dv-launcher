@@ -1,8 +1,8 @@
 import os
 import subprocess
 
-from .custom_logger import CustomLogger
-from ..constants import Constants
+from dv_launcher.data.constants import Constants
+from dv_launcher.services.logging.custom_logger import CustomLogger
 
 logger = CustomLogger()
 
@@ -65,6 +65,7 @@ def list_addons_in_folder(addons_folder: str) -> list[str]:
         raise Exception(f"Addons folder is not a directory: {addons_folder}")
     else:
         # Filter out hidden directories starting with '.' and non-directories
-        addons_list = [item for item in os.listdir(addons_folder) if (os.path.isdir(os.path.join(addons_folder, item)) and not item.startswith('.'))]
+        addons_list = [item for item in os.listdir(addons_folder) if
+                       (os.path.isdir(os.path.join(addons_folder, item)) and not item.startswith('.'))]
         logger.print_success(f"Found {len(addons_list)} addons in folder: {addons_folder}")
         return addons_list
