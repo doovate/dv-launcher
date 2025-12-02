@@ -56,7 +56,7 @@ def list_all_databases(constants: Constants, max_retries: int = 10) -> Optional[
     for i in range(max_retries):
         try:
             # Wait for PostgreSQL to be ready
-            if not wait_for_ready(constants, max_retries=3):
+            if not wait_for_ready(constants, max_retries=30):
                 continue
 
             cmd = f"docker exec {constants.COMPOSE_PROJECT_NAME}_db psql -U odoo -l -A"
