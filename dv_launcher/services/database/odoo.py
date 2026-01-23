@@ -102,8 +102,7 @@ async def update_admin_user(constants: Constants, port: str) -> None:
 
 async def create_database(constants: Constants, port: str = None) -> None:
     """
-    Creates an Odoo database using Playwright to automate the web interface
-
+    Creates an Odoo database using the JSON-RPC API
     Args:
         constants: Configuration constants
         port: Port where Odoo is running (defaults to ODOO_EXPOSED_PORT from constants)
@@ -113,26 +112,68 @@ async def create_database(constants: Constants, port: str = None) -> None:
 
     logger.print_status("Creating database")
 
-    for i in range(2):
-        try:
-            if constants.INITIAL_DB_NAME is not None and constants.INITIAL_DB_MASTER_PASS is not None and constants.INITIAL_DB_USER is not None and constants.INITIAL_DB_USER_PASS is not None:
-                async with async_playwright() as p:
-                    browser = await p.chromium.launch(headless=True)
-                    page = await browser.new_page()
-                    await page.goto(f"http://localhost:{port}/web/database/manager")
-                    await page.fill("input[name=\"master_pwd\"]", constants.INITIAL_DB_MASTER_PASS)
-                    await page.fill("input[name=\"name\"]", constants.INITIAL_DB_NAME)
-                    await page.fill("input[name=\"login\"]", constants.INITIAL_DB_USER)
-                    await page.fill("input[name=\"password\"]", constants.INITIAL_DB_USER_PASS)
-                    await page.select_option('#lang', 'es_ES')
-                    await page.select_option('#country', 'es')
-                    await page.click("text=Create database")
+    # Validate that we have the necessary credentials
+    if not all([
+        constants.INITIAL_DB_NAME,
+        constants.INITIAL_DB_MASTER_PASS,
+        constants.INITIAL_DB_USER_PASS
+    ]):
+        logger.print_warning("No database credentials provided, skipping database creation")
+        return
 
-                logger.print_success("Database created successfully")
-                return
-            else:
-                logger.print_warning("No database credentials provided, skipping database creation")
-                return
+    url = f"http://localhost:{port}/jsonrpc"
+
+    payload = {
+        "jsonrpc": "2.0",
+        "method": "call",
+        "params": {
+            "service": "db",
+            "method": "create_database",
+            "args": [
+                constants.INITIAL_DB_MASTER_PASS,
+                constants.INITIAL_DB_NAME,
+                False,
+                "es_ES",
+                constants.INITIAL_DB_USER_PASS
+            ]
+        },
+        "id": 1
+    }
+
+    for attempt in range(2):
+        try:
+            async with httpx.AsyncClient(timeout=300.0) as client:
+                response = await client.post(
+                    url,
+                    json=payload,
+                    headers={"Content-Type": "application/json"}
+                )
+
+                if response.status_code == 200:
+                    result = response.json()
+
+                    # Verify that the request was successful
+                    if "error" in result:
+                        error_msg = result["error"].get("data", {}).get("message", str(result["error"]))
+                        logger.print_error(f"Odoo API error: {error_msg}")
+                        raise Exception(error_msg)
+
+                    logger.print_success("Database created successfully")
+
+                    # Update admin user login if INITIAL_DB_USER is provided and different from "admin"
+                    if constants.INITIAL_DB_USER and constants.INITIAL_DB_USER != "admin":
+                        await update_admin_user(constants, port)
+
+                    return
+                else:
+                    logger.print_error(f"HTTP {response.status_code}: {response.text}")
+                    raise Exception(f"Failed with status code {response.status_code}")
+
+        except httpx.TimeoutException:
+            logger.print_error(f"Timeout creating database (attempt {attempt + 1}/2)")
+            if attempt == 1:
+                raise
         except Exception as e:
-            logger.print_error(f"Failed to create database: {e}")
-            raise
+            logger.print_error(f"Failed to create database (attempt {attempt + 1}/2): {e}")
+            if attempt == 1:
+                raise
