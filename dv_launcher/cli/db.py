@@ -26,7 +26,7 @@ def create(port: str = "8069"):
 async def _create_database(port: str) -> None:
     """Internal async function to create database"""
     constants = get_constants(cwd)
-    await odoo_db.create_database(constants, port)
+    await odoo_db.create_database(constants)
 
 
 if __name__ == "__main__":

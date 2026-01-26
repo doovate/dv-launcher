@@ -68,13 +68,10 @@ async def _handle_no_databases(constants: Constants) -> None:
     """
     Handles deployment when no databases exist
     """
-    # Launch all containers
-    compose.start_containers(constants)
 
     # Create the database if auto-create is enabled
     if constants.AUTO_CREATE_DATABASE:
-        await check_service_health(constants)
-        await odoo_db.create_database(constants)
+        odoo_db.create_database(constants)
 
         # Get the new database and install modules
         database_list = postgres.get_user_databases(constants)
@@ -83,9 +80,9 @@ async def _handle_no_databases(constants: Constants) -> None:
         # Install addons for the new database
         _install_and_update_addons(constants, database_list, addons_list)
 
-        # Restart containers
-        logger.print_header("DEPLOYING ENVIRONMENT")
-        compose.start_containers(constants)
+    # Launch containers
+    logger.print_header("DEPLOYING ENVIRONMENT")
+    compose.start_containers(constants)
 
 
 async def _handle_existing_databases(constants: Constants, database_list: list[str]) -> None:

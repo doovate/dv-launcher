@@ -109,6 +109,33 @@ def run_command_in_service(constants: Constants, service: str, command: str) -> 
         raise
 
 
+def run_command_in_running_service(constants: Constants, service: str, command: str) -> None:
+    """
+    Runs a command inside a specific running service container
+
+    Args:
+        constants: Configuration constants
+        service: Service name (e.g., 'odoo', 'db')
+        command: Command to execute inside the container
+    """
+    try:
+        cmd = f"docker exec {service} {command}"
+        subprocess.run(
+            cmd,
+            shell=True,
+            check=True,
+            capture_output=True,
+            text=True,
+            cwd=constants.BASE_DIR
+        )
+    except subprocess.CalledProcessError as e:
+        logger.print_error(f"Error running command in running service {service}: {str(e)}")
+        logger.print_critical(f"{e.stderr}")
+        show_logs_on_error(constants)
+        raise
+
+
+
 def show_logs_on_error(constants: Constants) -> None:
     """
     Shows the last 30 lines of docker compose logs when an error occurs
