@@ -64,8 +64,12 @@ def list_addons_in_folder(addons_folder: str) -> list[str]:
         logger.print_error(f"Addons folder is not a directory: {addons_folder}")
         raise Exception(f"Addons folder is not a directory: {addons_folder}")
     else:
-        # Filter out hidden directories starting with '.' and non-directories
-        addons_list = [item for item in os.listdir(addons_folder) if
-                       (os.path.isdir(os.path.join(addons_folder, item)) and not item.startswith('.'))]
+        # Filter out hidden directories starting with '.', non-directories and folders without a manifest file
+        addons_list = [
+            item for item in os.listdir(addons_folder)
+            if os.path.isdir(os.path.join(addons_folder, item))
+            and not item.startswith('.')
+            and "__manifest__.py" in os.listdir(os.path.join(addons_folder, item))
+        ]
         logger.print_success(f"Found {len(addons_list)} addons in folder: {addons_folder}")
         return addons_list

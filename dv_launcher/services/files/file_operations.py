@@ -139,8 +139,14 @@ def list_updated_addons(addons_folder: str, addons_cache_file: str) -> Tuple[
 
     to_update_list = []
 
-    # Get the list of addon directories
-    addon_list = [item for item in os.listdir(addons_folder) if os.path.isdir(os.path.join(addons_folder, item))]
+
+    # Get the list of addon directories (only those with __manifest__.py)
+    addon_list = [
+        item for item in os.listdir(addons_folder)
+        if os.path.isdir(os.path.join(addons_folder, item))
+           and not item.startswith('.')
+           and "__manifest__.py" in os.listdir(os.path.join(addons_folder, item))
+    ]
 
     for addon in addon_list:
         addon_path = os.path.join(addons_folder, addon)
