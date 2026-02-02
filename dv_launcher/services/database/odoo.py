@@ -45,7 +45,7 @@ def create_database(constants: Constants) -> None:
         logger.print_warning("No database credentials provided, skipping database creation")
         return
 
-    command = f"odoo -d {constants.INITIAL_DB_NAME} --db_host=db --db_port=5432 --db_user=odoo --db_password=odoo --init=base --stop-after-init --without-demo=all"
+    command = f"odoo -d {constants.INITIAL_DB_NAME} --db_host=db --db_port=5432 --db_user=odoo --db_password=odoo --load-language=es_ES --init=base --stop-after-init --without-demo=all"
 
     try:
         run_command_in_service(constants, "odoo", command)
