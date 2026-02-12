@@ -105,14 +105,12 @@ async def _handle_existing_databases(constants: Constants, database_list: list[s
         update_addons_string = ','.join(update_addons_list)
 
     # Install and update modules for each database
-    _install_and_update_addons(constants, database_list, addons_list, update_addons_list, update_addons_string)
+    _install_and_update_addons(constants, database_list, addons_list, update_addons_list, update_addons_string, update_addons_json)
 
     # Launch containers
     logger.print_header("DEPLOYING ENVIRONMENT")
     compose.start_containers(constants)
 
-    # Update cache
-    update_addons_cache(update_addons_json, constants.CACHE_ADDONS_FILE)
 
 
 async def _deploy_without_modules(constants: Constants) -> None:
@@ -130,7 +128,7 @@ async def _deploy_without_modules(constants: Constants) -> None:
 
 
 def _install_and_update_addons(constants: Constants, database_list: list[str], addons_list: list[str],
-                               update_addons_list: list[str] = None, update_addons_string: str = None
+                               update_addons_list: list[str] = None, update_addons_string: str = None, update_addons_json: dict = None
                                ) -> None:
     # Force update option
     force_update = '--dev=all' if constants.FORCE_UPDATE else ''
@@ -152,6 +150,9 @@ def _install_and_update_addons(constants: Constants, database_list: list[str], a
                 cmd = f"odoo -d {db} -u {update_addons_string} {force_update} --stop-after-init"
                 compose.run_command_in_service(constants, "odoo", cmd)
                 logger.print_success(f"Updating modules on database {db} completed")
+
+        # Update cache if no errors
+        update_addons_cache(update_addons_json, constants.CACHE_ADDONS_FILE)
     except Exception as e:
         logger.print_error(f"Error installing/updating modules: {e}")
         logger.print_warning("Skipping module installation/updates.")
@@ -163,13 +164,7 @@ async def _verify_deployment(constants: Constants) -> None:
     """
     logger.print_header("Verifying Odoo state")
 
-    if constants.DEPLOYMENT_TARGET == 'prod':
-        await asyncio.gather(
-            check_service_health(constants),
-            check_service_health(constants, constants.DOMAIN)
-        )
-    else:
-        await check_service_health(constants)
+    await check_service_health(constants)
 
 
 def deploy_database_only(constants: Constants) -> None:
