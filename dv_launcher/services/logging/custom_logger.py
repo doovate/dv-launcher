@@ -13,16 +13,24 @@ class CustomLogFormatter(logging.Formatter):
     BOLD = "\033[1m"
     RESET = "\033[0m"
 
-    # Formatos para cada nivel
-    FORMATS = {
-        logging.DEBUG: f"{CYAN}%(message)s{RESET}",
-        logging.INFO: f"{BLUE}[STATUS] %(message)s{RESET}",
-        logging.WARNING: f"{YELLOW}[WARNING] %(message)s{RESET}",
-        logging.ERROR: f"{RED}[ERROR] %(message)s{RESET}",
-        logging.CRITICAL: f"{RED}[CRITICAL] %(message)s{RESET}",
-        # Success level
-        25: f"{GREEN}[SUCCESS] %(message)s{RESET}"
-    }
+    def __init__(self, colored_output: bool = True):
+        super().__init__()
+
+        self.FORMATS = {
+            logging.DEBUG: f"{self.CYAN}%(message)s{self.RESET}",
+            logging.INFO: f"{self.BLUE}[STATUS] %(message)s{self.RESET}",
+            logging.WARNING: f"{self.YELLOW}[WARNING] %(message)s{self.RESET}",
+            logging.ERROR: f"{self.RED}[ERROR] %(message)s{self.RESET}",
+            logging.CRITICAL: f"{self.RED}[CRITICAL] %(message)s{self.RESET}",
+            25: f"{self.GREEN}[SUCCESS] %(message)s{self.RESET}"
+        } if colored_output else {
+            logging.DEBUG: "%(message)s",
+            logging.INFO: "[STATUS] %(message)s",
+            logging.WARNING: "[WARNING] %(message)s",
+            logging.ERROR: "[ERROR] %(message)s",
+            logging.CRITICAL: "[CRITICAL] %(message)s",
+            25: "[SUCCESS] %(message)s"
+        }
 
     def format(self, record):
         log_fmt = self.FORMATS.get(record.levelno, self.FORMATS[logging.INFO])
@@ -51,20 +59,23 @@ class CustomLogger(logging.Logger):
         # Add success level to logs
         logging.addLevelName(25, "SUCCESS")
 
-        log_level = logging.DEBUG
+        self.log_level = logging.DEBUG
 
         self.logger = logging.getLogger(name)
-        self.logger.setLevel(log_level)
+        self.logger.setLevel(self.log_level)
         self.logger.propagate = False
 
-        # Console handler
-        console_handler = logging.StreamHandler()
-        console_handler.setFormatter(CustomLogFormatter())
-        console_handler.setLevel(log_level)
 
-        self.logger.addHandler(console_handler)
 
         self._initialized = True
+
+    def configure(self, colored_output: bool = True):
+        # Console handler
+        console_handler = logging.StreamHandler()
+        custom_log_formater = CustomLogFormatter(colored_output= colored_output)
+        console_handler.setFormatter(custom_log_formater)
+        console_handler.setLevel(self.log_level)
+        self.logger.addHandler(console_handler)
 
     def print_header(self, message):
         """Print header"""
