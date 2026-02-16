@@ -139,6 +139,8 @@ def list_updated_addons(addons_folder: str, addons_cache_file: str) -> Tuple[
 
     to_update_list = []
 
+    if not cached_addons:
+        cached_addons = {}
 
     # Get the list of addon directories (only those with __manifest__.py)
     addon_list = [
