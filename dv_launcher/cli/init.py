@@ -28,7 +28,7 @@ def init() -> None:
     try:
         # Clone repository
         subprocess.run(
-            ["git", "clone", repo_url, destination_dir],
+            ["git", "clone", "-b", "dev", repo_url, destination_dir],
             check=True,
             capture_output=True,
             text=True
