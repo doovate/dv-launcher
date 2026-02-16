@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dv-launcher"
-version = "2.0.9"
+version = "2.0.10"
 description = "Odoo deploy command line tool"
 requires-python = ">=3.10.12"
 dependencies = [
